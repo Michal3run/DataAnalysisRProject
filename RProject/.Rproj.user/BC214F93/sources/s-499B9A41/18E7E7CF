@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543759612710.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "519983688",
+    "id" : "18E7E7CF",
+    "lastKnownWriteTime" : 1543759917,
+    "last_content_update" : 1543759917782,
+    "path" : "C:/Users/micha/Desktop/Studia/Semestr 3/Zaawansowana eksploracja danych/RProject/DataAnalysisRProject/RProject/Raport.Rmd",
+    "project_path" : "Raport.Rmd",
+    "properties" : {
+        "cursorPosition" : "15,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1",
+        "working_dir" : "project"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
