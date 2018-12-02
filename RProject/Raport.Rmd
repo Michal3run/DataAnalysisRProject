@@ -18,6 +18,8 @@ Na początku pliku powinna znajdować się automatycznie wypełniona data genera
 #1. Wykorzystane biblioteki
 ```{r bilbioteki}
 library(dplyr)
+library(tibble)
+library(tidyr)
 ```
 
 #3.Odczyt danych
@@ -37,12 +39,67 @@ data <- filter(data, !res_name %in% res_names_to_remove)
 nrow(data)
 ```
 
-Podsumowanie danych:
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#6. Podsumowanie danych:
 ```{r dane2}
 class(data)
-nrow(data)
-ncol(data)
-head(data,n=1)
+dim(data)
+object.size(data)
+sum(complete.cases(data))
+#head(data,n=1)
+```
+
+#7. Ograniczenie do 50 najpopularniejszych wartości
+```{r ograniczenie}
+top50 <- sort(table(data$res_name), decreasing=TRUE)[1:50]
+top50names <- names(top50)
+data <- filter(data, res_name %in% top50names)
+
+```
+
+#8.Korelacja między zmiennymi:
+```{r brakujace_dane}
+
+```
+
+#9. Ile przykładów ma każda klasa
+```{r ile_przykladow}
+table(data$res_name)
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
+```
+
+#5.Brakujące dane:
+```{r brakujace_dane}
+
 ```
 
 ## Including Plots
