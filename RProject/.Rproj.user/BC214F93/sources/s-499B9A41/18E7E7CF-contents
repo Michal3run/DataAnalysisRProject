@@ -11,14 +11,38 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Wstęp
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Na początku pliku powinna znajdować się automatycznie wypełniona data generacji dokumentu oraz spis treści pozwalający przejść do najważniejszych sekcji. Ponadto raport powinien zaczynać się od rozdziału podsumowującego całą analizę, streszczającego najważniejsze spostrzeżenia analityka.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#1. Wykorzystane biblioteki
+```{r bilbioteki}
+library(dplyr)
+```
 
-```{r cars}
-summary(cars)
+#3.Odczyt danych
+```{r dane, results='hide'}
+filePath = "C:/Users/micha/Downloads/all_summary.csv"
+initial <- read.table(filePath, nrows = 100, sep = ";", header = TRUE)
+classes <- sapply(initial, class)
+data <- read.table(filePath, colClasses = classes, sep = ";", nrows = 100, header = TRUE)
+
+```
+
+#4.Usuwanie wierszy
+```{r wiersze}
+nrow(data)
+res_names_to_remove <- c('UNK', 'UNX', 'UNL', 'DUM', 'N', 'BLOB', 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS', 'MET', 'MSE', 'PHE', 'PRO', 'SEC', 'SER', 'THR', 'TRP', 'TYR', 'VAL', 'DA', 'DG', 'DT', 'DC', 'DU', 'A', 'G', 'T', 'C', 'U', 'HOH', 'H20', 'WAT')
+data <- filter(data, !res_name %in% res_names_to_remove)
+nrow(data)
+```
+
+Podsumowanie danych:
+```{r dane2}
+class(data)
+nrow(data)
+ncol(data)
+head(data,n=1)
 ```
 
 ## Including Plots
