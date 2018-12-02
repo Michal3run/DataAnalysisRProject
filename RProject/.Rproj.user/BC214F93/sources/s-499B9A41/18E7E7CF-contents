@@ -57,48 +57,49 @@ sum(complete.cases(data))
 ```{r ograniczenie}
 top50 <- sort(table(data$res_name), decreasing=TRUE)[1:50]
 top50names <- names(top50)
+top50names
 data <- filter(data, res_name %in% top50names)
-
+nrow(data)
 ```
 
 #8.Korelacja między zmiennymi:
-```{r brakujace_dane}
+```{r brakujace_dane1}
 
 ```
 
 #9. Ile przykładów ma każda klasa
 ```{r ile_przykladow}
-table(data$res_name)
+sort(table(data$res_name), decreasing=TRUE)
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane2}
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane3}
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane4}
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane5}
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane6}
 
 ```
 
 #5.Brakujące dane:
-```{r brakujace_dane}
+```{r brakujace_dane7}
 
 ```
 
