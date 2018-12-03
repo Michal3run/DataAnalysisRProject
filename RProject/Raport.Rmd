@@ -114,7 +114,7 @@ Dodajemy kolumnę z różnicą
 
 ```{r niezgodnosc2}
 
-atoms_incompatibility_with_diff <-  mutate(atoms_incompatibility, diff = abs(local_res_atom_non_h_count - dict_atom_non_h_count))
+atoms_incompatibility_with_diff <- mutate(atoms_incompatibility, diff = abs(local_res_atom_non_h_count - dict_atom_non_h_count))
 
 ```
 
@@ -132,15 +132,38 @@ Tabela pokazująca 10 klas z największą niezgodnością liczby atomów:
 ```{r niezgodnosc4}
 
 atoms_table_data <- select(atoms_incompatibility_with_diff_sorted, res_name, diff)[1:10,]
-atoms_table_data %>% knitr::kable() %>% kable_styling()
+row.names(atoms_table_data) <- NULL
+atoms_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność liczy atomów')) %>% kable_styling()
+
+
+```
+
+
+To samo dla elektronów:
+
+```{r niezgodnosc_elektrony}
+
+electrons_incompatibility <- unique(select(data, res_name, local_res_atom_non_h_electron_sum, dict_atom_non_h_electron_sum))
+
+electrons_incompatibility_with_diff <- mutate(electrons_incompatibility, diff = abs(local_res_atom_non_h_electron_sum - dict_atom_non_h_electron_sum))
+
+electrons_incompatibility_with_diff_sorted <- electrons_incompatibility_with_diff[order(-electrons_incompatibility_with_diff$diff),]
+
+electrons_table_data <- select(electrons_incompatibility_with_diff_sorted, res_name, diff)[1:10,]
+row.names(electrons_table_data) <- NULL
+electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność liczy elektronów')) %>% kable_styling()
 
 
 ```
 
 
 
-#5.Brakujące dane:
-```{r brakujace_dane4}
+
+#12. Rozkład wartości kolumn zaczynających się od part_01
+
+```{r part_01}
+
+  
 
 ```
 
