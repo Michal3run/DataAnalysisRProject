@@ -21,7 +21,8 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 library(ggplot2)
-library(kableExtra)
+library(kableExtra) #nicer tables
+library(data.table) #%like%
 ```
 
 
@@ -161,9 +162,20 @@ electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność l
 
 #12. Rozkład wartości kolumn zaczynających się od part_01
 
-```{r part_01}
+```{r fig.height = 100}
 
-  
+is_part_01_column <- colnames(data) %like% 'part_01'
+part_01_column_names <- colnames(data)[is_part_01_column]
+head(part_01_column_names, 10)
+
+filtered_data <- data[is_part_01_column]
+
+gathered_data <- gather(filtered_data, 'col_name', "value", part_01_column_names)
+dim(gathered_data)
+
+k <- ggplot(gathered_data, aes(x = gathered_data$value))
+i <- k + facet_wrap(vars(gathered_data$col_name), ncol = 3, scales = "free")
+i + geom_histogram(bins = 25)
 
 ```
 
