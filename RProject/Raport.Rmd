@@ -71,11 +71,9 @@ W poniższej sekcji oczyścimy dane z kolumn i wierszy zawierających wartości 
 
 Na początku analiza kolumn. 
 
-Wyznaczamy kolumny, które zawierają przynajmniej jedną wartość NaN.
+Wyznaczamy kolumny, które zawierają przynajmniej jedną wartość NaN, grupujemy po nazwie.
 
-Następnie grupujemy do nazwie kolumny.
-
-```{r brakujace_dane, cache=TRUE, message=FALSE, }
+```{r brakujace_dane, cache=TRUE, warning=FALSE, message=FALSE }
 
 column_value_DT <- gather(data, "column_name", "val", 1:ncol(data))
 columns_with_nans <- filter(column_value_DT, is.na(column_value_DT$val))[,1]
