@@ -38,11 +38,12 @@ set.seed(23)
 filePath = "C:/Users/micha/Downloads/all_summary.csv"
 initial <- read.table(filePath, nrows = 100, sep = ";", header = TRUE)
 classes <- sapply(initial, class)
-data <- read.table(filePath, colClasses = classes, sep = ";", na.strings = 'nan', nrows = 10000, header = TRUE)
-
+file_data <- read.table(filePath, colClasses = classes, sep = ";", na.strings = 'nan', nrows = 10000, header = TRUE)
+data <- file_data
 ```
 
 Dane znajdują się w zmiennej data.
+
 
 
 #4.Wstępne czyszczenie danych:
@@ -54,43 +55,100 @@ Usuwamy wiersze posiadające wartość zmiennej ref_name równą: “UNK”, “
 ```{r wiersze}
 res_names_to_remove <- c('UNK', 'UNX', 'UNL', 'DUM', 'N', 'BLOB', 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS', 'MET', 'MSE', 'PHE', 'PRO', 'SEC', 'SER', 'THR', 'TRP', 'TYR', 'VAL', 'DA', 'DG', 'DT', 'DC', 'DU', 'A', 'G', 'T', 'C', 'U', 'HOH', 'H20', 'WAT')
 data <- filter(data, !res_name %in% res_names_to_remove)
-nrow(data)
 ```
 
 Liczba wierszy w zbiorze po usunięciu wierszy z ww. wartościami res_name: `r nrow(data)`.
 
 
+
 #5. Analiza brakujących danych:
 
+W poniższej sekcji oczyścimy dane z kolumn i wierszy zawierających wartości NaN.
 
-```{r brakujace_dane}
+Na początku analiza kolumn. 
+
+Wyznaczamy kolumny, które zawierają przynajmniej jedną wartość NaN.
+
+Następnie grupujemy do nazwie kolumny.
+
+```{r brakujace_dane, cache=TRUE}
 
 column_value_DT <- gather(data, "column_name", "val", 1:ncol(data))
 columns_with_nans <- filter(column_value_DT, is.na(column_value_DT$val))[,1]
 
-
+table(columns_with_nans)
 
 ```
+
+Jak widać na podsumowaniu powyżej, dla wszystkich wierszy kolumna weight_col ma wartość NaN.
+Usuwamy ją ze zbioru danych:
+
+``` {r usun_weight_col}
+data <- data[,-which(names(data) == 'weight_col' )]
+```
+
+Widać również, że część wierszy nie posiada wartości dla kolumn zaczynających się od part_02 oraz part_01. 
+
+W celu oczyszczenia danych usuwamy te wiersze.
+
+``` {r usuniecie_wierszy_z_nan}
+
+    all_rows_count <- nrow(data)
+    data <- data[complete.cases(data),]
+    cleaned_rows_count <- nrow(data)
+    removed_rows_count <- all_rows_count - cleaned_rows_count 
+```
+
+Usunięto `r removed_rows_count` wierszy. Stanowi to `r removed_rows_count*100/all_rows_count ` % wszystkich wierszy.
 
 
 
 #6. Podsumowanie danych:
-```{r dane2}
-class(data)
-dim(data)
-object.size(data)
-sum(complete.cases(data))
-#head(data,n=1)
+
+Liczba wierszy: `r nrow(data)` 
+
+Liczba kolumn: `r ncol(data)`
+
+Liczba unikalnych wartości res_name: `r length(unique(data$res_name))`
+
+Poniżej rozmiar data frame w pamięci (w Mb):
+
+``` {r size}
+print(object.size(data), units='Mb')
 ```
 
-#7. Ograniczenie do 50 najpopularniejszych wartości
-```{r ograniczenie}
+
+
+#7. Ograniczenie liczby klas do 50 najpopularniejszych wartości
+
+W tej sekcji filtrujemy dane do wierszy, których klasa znajduje się wśród 50 najpopularniejszych.
+
+Na początku grupujemy dane po atrybucie res_name i sortujemy.
+
+
+```{r ograniczenie1}
 top50 <- sort(table(data$res_name), decreasing=TRUE)[1:50]
 top50names <- names(top50)
-top50names
-data <- filter(data, res_name %in% top50names)
-nrow(data)
+
+
 ```
+
+Poniżej znajduje się posortowana lista 50 najpopularniejszych klas.
+
+```{r ograniczenie2}
+top50names
+```
+
+
+Filtrujemy za pomocą wyznaczonych 50 nazw
+
+```{r ograniczenie3}
+data <- filter(data, res_name %in% top50names)
+```
+
+
+Pozostało `r nrow(data)` wierszy.
+
 
 #8.Korelacja między zmiennymi:
 ```{r brakujace_dane1}
@@ -99,7 +157,7 @@ nrow(data)
 
 #9. Ile przykładów ma każda klasa
 ```{r ile_przykladow}
-sort(table(data$res_name), decreasing=TRUE)
+sort(table(droplevels(data$res_name)), decreasing=TRUE)
 
 ```
 
