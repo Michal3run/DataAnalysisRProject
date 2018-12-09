@@ -1,7 +1,7 @@
 ---
-title: "Analiza danych w R"
-author: "Michal Hejduk"
-date: "2 grudnia 2018"
+title: "Analiza danych krystalograficznych w R pochodzących z bazy Protein Data Bank (PDB)"
+author: "Michał Hejduk"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document: default
   pdf_document: default
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Na początku pliku powinna znajdować się automatycznie wypełniona data generacji dokumentu oraz spis treści pozwalający przejść do najważniejszych sekcji. Ponadto raport powinien zaczynać się od rozdziału podsumowującego całą analizę, streszczającego najważniejsze spostrzeżenia analityka.
 
 #1. Wykorzystane biblioteki
-```{r bilbioteki}
+```{r bilbioteki, warning=FALSE, message=FALSE, hide = TRUE}
 library(dplyr)
 library(tibble)
 library(tidyr) #transforming data
@@ -25,7 +25,12 @@ library(kableExtra) #nicer tables
 library(data.table) #%like%
 ```
 
+#2. Powtarzalność wyników przy każdym uruchomieniu raportu na tych samych danych
 
+``` {r powtarzalnosc}
+
+set.seed(23)
+```
 
 #3.Wczytanie danych z pliku
 
@@ -33,7 +38,6 @@ Wczytujemy dane z pliku all_summary.csv.
 Za pomocą heurystyki wyznaczamy klasy pierwszych 100 wierszy.
 
 ```{r dane, results='hide', cache=TRUE}
-set.seed(23)
 
 filePath = "C:/Users/micha/Downloads/all_summary.csv"
 initial <- read.table(filePath, nrows = 100, sep = ";", header = TRUE)
@@ -71,13 +75,18 @@ Wyznaczamy kolumny, które zawierają przynajmniej jedną wartość NaN.
 
 Następnie grupujemy do nazwie kolumny.
 
-```{r brakujace_dane, cache=TRUE}
+```{r brakujace_dane, cache=TRUE, message=FALSE, }
 
 column_value_DT <- gather(data, "column_name", "val", 1:ncol(data))
 columns_with_nans <- filter(column_value_DT, is.na(column_value_DT$val))[,1]
 
-table(columns_with_nans)
+```
 
+Wyświetlamy podsumowanie:
+
+```{r brakujace_dane2}
+
+table(columns_with_nans)
 ```
 
 Jak widać na podsumowaniu powyżej, dla wszystkich wierszy kolumna weight_col ma wartość NaN.
@@ -144,6 +153,7 @@ Filtrujemy za pomocą wyznaczonych 50 nazw
 
 ```{r ograniczenie3}
 data <- filter(data, res_name %in% top50names)
+data$res_name <- droplevels(data$res_name)
 ```
 
 
@@ -157,7 +167,7 @@ Pozostało `r nrow(data)` wierszy.
 
 #9. Ile przykładów ma każda klasa
 ```{r ile_przykladow}
-sort(table(droplevels(data$res_name)), decreasing=TRUE)
+sort(table(data$res_name), decreasing=TRUE)
 
 ```
 
@@ -239,7 +249,7 @@ electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność l
 
 #12. Rozkład wartości kolumn zaczynających się od part_01
 
-```{r fig.height = 10, cache=TRUE}
+```{r fig.height = 90, cache=TRUE}
 
 is_part_01_column <- colnames(data) %like% 'part_01'
 part_01_column_names <- colnames(data)[is_part_01_column]
