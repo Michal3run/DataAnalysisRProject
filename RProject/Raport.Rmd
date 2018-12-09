@@ -19,7 +19,7 @@ Na początku pliku powinna znajdować się automatycznie wypełniona data genera
 ```{r bilbioteki}
 library(dplyr)
 library(tibble)
-library(tidyr)
+library(tidyr) #transforming data
 library(ggplot2)
 library(kableExtra) #nicer tables
 library(data.table) #%like%
@@ -27,29 +27,48 @@ library(data.table) #%like%
 
 
 
-#3.Odczyt danych
-```{r dane, results='hide'}
+#3.Wczytanie danych z pliku
+
+Wczytujemy dane z pliku all_summary.csv. 
+Za pomocą heurystyki wyznaczamy klasy pierwszych 100 wierszy.
+
+```{r dane, results='hide', cache=TRUE}
+set.seed(23)
+
 filePath = "C:/Users/micha/Downloads/all_summary.csv"
 initial <- read.table(filePath, nrows = 100, sep = ";", header = TRUE)
 classes <- sapply(initial, class)
-data <- read.table(filePath, colClasses = classes, sep = ";", nrows = 100, header = TRUE)
+data <- read.table(filePath, colClasses = classes, sep = ";", na.strings = 'nan', nrows = 10000, header = TRUE)
 
 ```
 
+Dane znajdują się w zmiennej data.
 
 
-#4.Usuwanie wierszy
+#4.Wstępne czyszczenie danych:
+
+Liczba wierszy w zbiorze: `r nrow(data)`.
+
+Usuwamy wiersze posiadające wartość zmiennej ref_name równą: “UNK”, “UNX”, “UNL”, “DUM”, “N”, “BLOB”, “ALA”, “ARG”, “ASN”, “ASP”, “CYS”, “GLN”, “GLU”, “GLY”, “HIS”, “ILE”, “LEU”, “LYS”, “MET”, “MSE”, “PHE”, “PRO”, “SEC”, “SER”, “THR”, “TRP”, “TYR”, “VAL”, “DA”, “DG”, “DT”, “DC”, “DU”, “A”, “G”, “T”, “C”, “U”, “HOH”, “H20”, “WAT”
+
 ```{r wiersze}
-nrow(data)
 res_names_to_remove <- c('UNK', 'UNX', 'UNL', 'DUM', 'N', 'BLOB', 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS', 'MET', 'MSE', 'PHE', 'PRO', 'SEC', 'SER', 'THR', 'TRP', 'TYR', 'VAL', 'DA', 'DG', 'DT', 'DC', 'DU', 'A', 'G', 'T', 'C', 'U', 'HOH', 'H20', 'WAT')
 data <- filter(data, !res_name %in% res_names_to_remove)
 nrow(data)
 ```
 
+Liczba wierszy w zbiorze po usunięciu wierszy z ww. wartościami res_name: `r nrow(data)`.
 
 
-#5.Brakujące dane:
+#5. Analiza brakujących danych:
+
+
 ```{r brakujace_dane}
+
+column_value_DT <- gather(data, "column_name", "val", 1:ncol(data))
+columns_with_nans <- filter(column_value_DT, is.na(column_value_DT$val))[,1]
+
+
 
 ```
 
@@ -162,7 +181,7 @@ electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność l
 
 #12. Rozkład wartości kolumn zaczynających się od part_01
 
-```{r fig.height = 100}
+```{r fig.height = 10, cache=TRUE}
 
 is_part_01_column <- colnames(data) %like% 'part_01'
 part_01_column_names <- colnames(data)[is_part_01_column]
