@@ -209,6 +209,25 @@ corrplot(cor_data2, tl.col="black", order = "FPC",
 
 W pliku "korelacja_miedzy_kolumnami_part_01.pdf" znajduje się powyższa wizualizacja.
 
+Dodatkowo sprawdzamy korelację dla kolumn nie zaczynających się od part (których jest najwięcej), oraz skeleton.
+
+```{r korelacje3, cache=TRUE, warning = FALSE, message=FALSE }
+
+no_part_skeleton_data <- numeric_data %>% select(-starts_with("part")) %>% select(-starts_with("skeleton"))
+
+cor_data3 <- cor(no_part_skeleton_data, use = "pairwise.complete.obs") 
+cor_data3[is.na(cor_data3)] <- 0
+
+#pdf(file = "korelacja_miedzy_kolumnami_no_part_skeleton.pdf")
+corrplot(cor_data3, tl.col="black", order = "FPC", method = "square",
+         tl.cex = 0.5, title = "Korelacja między kolumnami")
+#dev.off()
+
+```
+
+Tutaj z racji dużo mniejszej liczby kolumn, wykres jest bardziej czytelny.
+
+Jak można zauważyć, większość kolumn zawierających w swojej nazwie słowo atom, jest silnie skorelowana.
 
 #9. Liczba przykładów dla każdej klasy
 ```{r ile_przykladow}
@@ -338,10 +357,67 @@ ggplotly(p)
 
 ```
 
-#5.Brakujące dane:
-```{r brakujace_dane6}
+#14. Przewidywanie liczby elektronów i atomów na podstawie innych kolumn
+
+Filtrujemy dane do kolumn numerycznych.
+Wykorzystujemy funkcję lm.
+
+```{r regresja, cache = TRUE}
+
+is_numeric_column_list <- unlist(lapply(data, is.numeric))
+numeric_data <- data[, is_numeric_column_list]
+
+without_electron <- names(numeric_data)[-which(names(numeric_data) =='local_res_atom_non_h_electron_sum')]
+
+joined_query1 <- paste("local_res_atom_non_h_electron_sum ~ ", without_electron, sep = "")
+
+electon_lm <- lm(joined_query1, numeric_data) #lm: fit linear models
+electon_lm_summary <- summary(electon_lm)  
 
 ```
+
+Szacowana trafność regresji:
+
+R^2 
+
+``` {r r21}
+electon_lm_summary$r.squared
+```
+
+RMSE 
+
+``` {r RMSE1}
+sqrt(mean(electon_lm_summary$residuals^2))
+```
+
+Analogicznie postępujemy dla liczby elektronów:
+
+```{r regresja2, cache = TRUE}
+
+without_atoms <- names(numeric_data)[-which(names(numeric_data) =='local_res_atom_non_h_count')]
+
+joined_query1 <- paste("local_res_atom_non_h_count ~ ",without_atoms,sep = "")
+
+atom_lm <- lm(joined_query1, numeric_data) #lm: fit linear models
+atom_lm_summary <- summary(atom_lm)  
+
+```
+
+Szacowana trafność regresji:
+
+R^2 
+
+``` {r r22}
+atom_lm_summary$r.squared
+```
+
+RMSE 
+
+``` {r RMSE2}
+sqrt(mean(atom_lm_summary$residuals^2))
+```
+
+
 
 #5.Brakujące dane:
 ```{r brakujace_dane7}
