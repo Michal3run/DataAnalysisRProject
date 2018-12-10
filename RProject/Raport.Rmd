@@ -23,6 +23,7 @@ library(tidyr) #transforming data
 library(ggplot2)
 library(kableExtra) #nicer tables
 library(data.table) #%like%
+library(corrplot)
 ```
 
 #2. Powtarzalność wyników przy każdym uruchomieniu raportu na tych samych danych
@@ -159,9 +160,37 @@ Pozostało `r nrow(data)` wierszy.
 
 
 #8.Korelacja między zmiennymi:
-```{r brakujace_dane1}
+
+Korelację wyznaczamy dla kolumn numerycznych.
+
+Pomijamy kolumny: "blob_coverage" "res_coverage"  "title"         "pdb_code"      "res_name"
+ "chain_id"      "skeleton_data" "fo_col"        "fc_col"  
+ 
+Dla zbioru danych korelację wyznaczamy za pomocą funkcji cor.
+
+Następnie prezentujemy wyniki, za pomocą funkcji corrplot.
+ 
+```{r korelacje, cache=TRUE}
+
+is_numeric_column_list <- unlist(lapply(data, is.numeric))
+
+numeric_data <- data[, is_numeric_column_list]
+
+cor_data <- cor(numeric_data, use = "complete.obs") # NA are removed
+
+#pdf(file = "korelacja_miedzy_kolumnami.pdf")
+
+corrplot(cor_data, insig = "blank", method = "color", addCoef.col="grey",
+         title = "Korelacja między kolumnami")
+
+#dev.off()
 
 ```
+
+Z racji dużego rozmiaru macierzy (402 x 402) wykres nie jest zbyt czytelny. 
+
+Wynik można zobaczyć również w wyeksportowanym pliku pdf: corrplot_results.pdf.
+
 
 #9. Liczba przykładów dla każdej klasy
 ```{r ile_przykladow}
@@ -244,8 +273,6 @@ electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność l
 
 
 ```
-
-
 
 
 #12. Rozkład wartości wszystkich kolumn zaczynających się od part_01
