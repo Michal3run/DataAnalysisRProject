@@ -419,17 +419,7 @@ sqrt(mean(atom_lm_summary$residuals^2))
 
 
 
-#5.Brakujące dane:
+#15. Klasyfikator przewidujący wartość atrybutu res_name:
 ```{r brakujace_dane7}
 
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
