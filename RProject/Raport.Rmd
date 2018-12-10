@@ -163,13 +163,13 @@ Pozostało `r nrow(data)` wierszy.
 
 ```
 
-#9. Ile przykładów ma każda klasa
+#9. Liczba przykładów dla każdej klasy
 ```{r ile_przykladow}
 sort(table(data$res_name), decreasing=TRUE)
 
 ```
 
-#10.Wykresy:
+#10. Wykresy rozkładów liczby atomów (local_res_atom_non_h_count) i elektronów (local_res_atom_non_h_electron_sum).
 
 ```{r wykres1}
 
@@ -190,13 +190,16 @@ chart2
 
 
 #11. Analiza klas pod względem niezgodności liczby atomów i elektronów
+
+Na początek wybieramy interesujące nas kolumny do porównań: local_res_atom_non_h_count, oraz dict_atom_non_h_count. Dodatkowo każdy wiersz zawiera nazwę klasy.  
+
 ```{r niezgodnosc}
 
 atoms_incompatibility <- unique(select(data, res_name, local_res_atom_non_h_count, dict_atom_non_h_count))
 
 ```
 
-Dodajemy kolumnę z różnicą
+Dodajemy kolumnę z różnicą, wyliczoną na postawie 2 innych.
 
 ```{r niezgodnosc2}
 
@@ -204,7 +207,7 @@ atoms_incompatibility_with_diff <- mutate(atoms_incompatibility, diff = abs(loca
 
 ```
 
-Sortujemy
+Sortujemy i wyświetlamy 5 pierwszych.
 
 ```{r niezgodnosc3}
 
@@ -213,7 +216,7 @@ head(atoms_incompatibility_with_diff_sorted, 5)
 
 ```
 
-Tabela pokazująca 10 klas z największą niezgodnością liczby atomów:
+Poniżej znajduje się tabela pokazująca 10 klas z największą niezgodnością liczby atomów:
 
 ```{r niezgodnosc4}
 
@@ -225,7 +228,7 @@ atoms_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność liczy
 ```
 
 
-To samo dla elektronów:
+Analogicznie postępujemy aby pokazać niezgodność liczby elektronów:
 
 ```{r niezgodnosc_elektrony}
 
@@ -245,22 +248,37 @@ electrons_table_data %>% knitr::kable(col.names = c('res_name', 'Niezgodność l
 
 
 
-#12. Rozkład wartości kolumn zaczynających się od part_01
+#12. Rozkład wartości wszystkich kolumn zaczynających się od part_01
 
-```{r fig.height = 90, cache=TRUE}
+Na początek wyszukujemy nazwy kolumn zaczynające się od part_01.
+Wyświetlamy 10 pierwszych.
+
+``` {r rozklad_kolumny}
 
 is_part_01_column <- colnames(data) %like% 'part_01'
 part_01_column_names <- colnames(data)[is_part_01_column]
 head(part_01_column_names, 10)
+
+```
+
+Następnie filtrujemy dane, przekształcamy do postaci: <nazwa kolumny, wartość>
+
+```{r rozklad_wykres, cache=TRUE}
 
 filtered_data <- data[is_part_01_column]
 
 gathered_data <- gather(filtered_data, 'col_name', "value", part_01_column_names)
 dim(gathered_data)
 
+```
+
+wyświetlamy rozkład wartości, osobny wykres dla każdej kolumny:
+
+```{r rozklad_wykres2, fig.height = 90, cache=TRUE}
+
 k <- ggplot(gathered_data, aes(x = gathered_data$value))
 i <- k + facet_wrap(vars(gathered_data$col_name), ncol = 3, scales = "free")
-i + geom_histogram(bins = 25) + xlab("Rozkłady wartości")
+i + geom_histogram(bins = 25) + xlab("Rozkład wartości")
 
 ```
 
