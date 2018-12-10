@@ -1,4 +1,0 @@
-"0","chart_data_1 <- ggplot(data, aes(x = data$local_res_atom_non_h_count))"
-"0","chart_layout_1 <- geom_histogram(col = 'blue', fill = 'orange', binwidth = 1)"
-"0","chart1 <- chart_data_1 + chart_layout_1 + labs(title=""Rozkład liczby atomów"") + labs(x=""Liczba atomów"")"
-"0","chart1"
