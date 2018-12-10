@@ -3,7 +3,9 @@ title: "Analiza danych krystalograficznych w R pochodzących z bazy Protein Data
 author: "Michał Hejduk"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document: default
+  html_document:
+    toc: true
+    theme: united
   pdf_document: default
 ---
 
@@ -11,7 +13,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Wstęp
+# Wstęp
 
 Na początku pliku powinna znajdować się automatycznie wypełniona data generacji dokumentu oraz spis treści pozwalający przejść do najważniejszych sekcji. Ponadto raport powinien zaczynać się od rozdziału podsumowującego całą analizę, streszczającego najważniejsze spostrzeżenia analityka.
 
@@ -53,7 +55,7 @@ Dane znajdują się w zmiennej data.
 
 
 
-#4.Wstępne czyszczenie danych:
+#4.Wstępne czyszczenie danych
 
 Liczba wierszy w zbiorze: `r nrow(data)`.
 
@@ -68,7 +70,7 @@ Liczba wierszy w zbiorze po usunięciu wierszy z ww. wartościami res_name: `r n
 
 
 
-#5. Analiza brakujących danych:
+#5. Analiza brakujących danych
 
 W poniższej sekcji oczyścimy dane z kolumn i wierszy zawierających wartości NaN.
 
@@ -113,7 +115,7 @@ Usunięto `r removed_rows_count` wierszy. Stanowi to `r removed_rows_count*100/a
 
 
 
-#6. Podsumowanie danych:
+#6. Podsumowanie danych
 
 Liczba wierszy: `r nrow(data)` 
 
@@ -161,7 +163,7 @@ data$res_name <- droplevels(data$res_name)
 Pozostało `r nrow(data)` wierszy.
 
 
-#8.Korelacja między zmiennymi:
+#8.Korelacja między zmiennymi
 
 Korelację wyznaczamy dla kolumn numerycznych.
 
@@ -236,7 +238,7 @@ sort(table(data$res_name), decreasing=TRUE)
 
 ```
 
-#10. Wykresy rozkładów liczby atomów (local_res_atom_non_h_count) i elektronów (local_res_atom_non_h_electron_sum).
+#10. Wykresy rozkładów liczby atomów (local_res_atom_non_h_count) i elektronów (local_res_atom_non_h_electron_sum)
 
 ```{r wykres1}
 
@@ -347,7 +349,7 @@ i + geom_histogram(bins = 25) + xlab("Rozkład wartości")
 
 ```
 
-#13.Interaktywny wykres z liczbą atomów, elektronów, oraz nazwą klasy:
+#13.Interaktywny wykres z liczbą atomów, elektronów, oraz nazwą klasy
 ```{r interaktywny_wykres}
 p <- ggplot(data, aes(local_res_atom_non_h_count, local_res_atom_non_h_electron_sum,
                        color=res_name)) + 
@@ -420,7 +422,7 @@ sqrt(mean(atom_lm_summary$residuals^2))
 
 
 
-#15. Klasyfikator przewidujący wartość atrybutu res_name:
+#15. Klasyfikator przewidujący wartość atrybutu res_name
 
 Na początek oczyszczamy dane z kolumn, których nie powinniśmy brać do klasyfikacji:
 
