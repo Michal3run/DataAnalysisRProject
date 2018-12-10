@@ -441,6 +441,45 @@ cleaned_data <- cleaned_data %>% select(-starts_with("dict_"), -starts_with("loc
 cleaned_data <- cleaned_data[, sapply(cleaned_data, nlevels) != 1]
 ```
 
+Stratyfikujemy zbiór, trenujemy za pomocą algorytmu random forest:
 
+```{r klasyfikator2, cache=TRUE, echo = FALSE, results= FALSE}
+
+inTraining <- 
+    createDataPartition(
+        # atrybut do stratyfikacji
+        y = cleaned_data$res_name,
+        p = .75,
+        list = FALSE)
+
+
+training <- cleaned_data[ inTraining,]
+testing  <- cleaned_data[-inTraining,]
+
+
+ctrl <- trainControl(
+    # powtórzona ocena krzyżowa
+    method = "repeatedcv",
+    number = 2,
+    repeats = 2)
+
+
+# fit <- train(res_name ~ .,
+#              data = training,
+#              method = "rf",
+#              trControl = ctrl)
+
+
+```
+
+Na koniec podsumowanie wyników:
+
+```{r klasyfikator3}
+
+
+# rfClasses <- predict(fit, newdata = testing)
+# confusionMatrix(data = rfClasses, testing$Class)
+
+```
 
 
