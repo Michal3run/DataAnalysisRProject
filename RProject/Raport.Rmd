@@ -260,7 +260,7 @@ dim(gathered_data)
 
 k <- ggplot(gathered_data, aes(x = gathered_data$value))
 i <- k + facet_wrap(vars(gathered_data$col_name), ncol = 3, scales = "free")
-i + geom_histogram(bins = 25)
+i + geom_histogram(bins = 25) + xlab("Rozkłady wartości")
 
 ```
 
