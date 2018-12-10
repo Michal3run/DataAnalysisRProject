@@ -13,7 +13,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Wstęp
+##Wstęp
 
 Analiza zbioru była dosyć skomplikowana z powodu dużej liczby kolumn.
 
@@ -42,7 +42,7 @@ library(caret)
 set.seed(23)
 ```
 
-#3.Wczytanie danych z pliku
+#3. Wczytanie danych z pliku
 
 Wczytujemy dane z pliku all_summary.csv. 
 Za pomocą heurystyki wyznaczamy klasy pierwszych 100 wierszy.
@@ -60,7 +60,7 @@ Dane znajdują się w zmiennej data.
 
 
 
-#4.Wstępne czyszczenie danych
+#4. Wstępne czyszczenie danych
 
 Liczba wierszy w zbiorze: `r nrow(data)`.
 
@@ -168,7 +168,7 @@ data$res_name <- droplevels(data$res_name)
 Pozostało `r nrow(data)` wierszy.
 
 
-#8.Korelacja między zmiennymi
+#8. Korelacja między zmiennymi
 
 Korelację wyznaczamy dla kolumn numerycznych.
 
@@ -354,7 +354,7 @@ i + geom_histogram(bins = 25) + xlab("Rozkład wartości")
 
 ```
 
-#13.Interaktywny wykres z liczbą atomów, elektronów, oraz nazwą klasy
+#13. Interaktywny wykres z liczbą atomów, elektronów, oraz nazwą klasy
 ```{r interaktywny_wykres}
 p <- ggplot(data, aes(local_res_atom_non_h_count, local_res_atom_non_h_electron_sum,
                        color=res_name)) + 
@@ -443,7 +443,7 @@ cleaned_data <- cleaned_data[, sapply(cleaned_data, nlevels) != 1]
 
 Stratyfikujemy zbiór, trenujemy za pomocą algorytmu random forest:
 
-```{r klasyfikator2, cache=TRUE, echo = FALSE, results= FALSE}
+```{r klasyfikator2, cache=TRUE}
 
 inTraining <- 
     createDataPartition(
