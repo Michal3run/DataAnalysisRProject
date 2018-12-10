@@ -25,6 +25,7 @@ library(plotly)
 library(kableExtra) #ładne tabele
 library(data.table) #%like%
 library(corrplot)
+library(caret)
 ```
 
 #2. Powtarzalność wyników przy każdym uruchomieniu raportu na tych samych danych
@@ -420,6 +421,37 @@ sqrt(mean(atom_lm_summary$residuals^2))
 
 
 #15. Klasyfikator przewidujący wartość atrybutu res_name:
-```{r brakujace_dane7}
+
+
+```{r klasyfikator}
+
+cleaned_data <- data[, sapply(data, nlevels) != 1]
+
+inTraining <- 
+    createDataPartition(
+        # atrybut do stratyfikacji
+        y = cleaned_data$res_name,
+        p = .75,
+        list = FALSE)
+
+
+
+training <- cleaned_data[ inTraining,]
+testing  <- cleaned_data[-inTraining,]
+
+
+ctrl <- trainControl(
+    # powtórzona ocena krzyżowa
+    method = "repeatedcv",
+    number = 2,
+    repeats = 5)
+
+
+fit <- train(res_name ~ .,
+             data = training,
+             method = "rf",
+             trControl = ctrl,
+             # Paramter dla algorytmu uczącego
+             ntree = 10)
 
 ```
