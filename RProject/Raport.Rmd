@@ -19,9 +19,10 @@ Na początku pliku powinna znajdować się automatycznie wypełniona data genera
 ```{r bilbioteki, warning=FALSE, message=FALSE, hide = TRUE}
 library(dplyr)
 library(tibble)
-library(tidyr) #transforming data
+library(tidyr) #transformowanie danych
 library(ggplot2)
-library(kableExtra) #nicer tables
+library(plotly)
+library(kableExtra) #ładne tabele
 library(data.table) #%like%
 library(corrplot)
 ```
@@ -326,8 +327,14 @@ i + geom_histogram(bins = 25) + xlab("Rozkład wartości")
 
 ```
 
-#5.Brakujące dane:
-```{r brakujace_dane5}
+#13.Interaktywny wykres z liczbą atomów, elektronów, oraz nazwą klasy:
+```{r interaktywny_wykres}
+p <- ggplot(data, aes(local_res_atom_non_h_count, local_res_atom_non_h_electron_sum,
+                       color=res_name)) + 
+    geom_point() +
+    xlab("Liczba atomów") +
+    ylab("Liczba elektonów")
+ggplotly(p)
 
 ```
 
