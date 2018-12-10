@@ -170,26 +170,43 @@ Dla zbioru danych korelację wyznaczamy za pomocą funkcji cor.
 
 Następnie prezentujemy wyniki, za pomocą funkcji corrplot.
  
-```{r korelacje, cache=TRUE}
+```{r korelacje, cache=TRUE, warning = FALSE, message=FALSE }
 
 is_numeric_column_list <- unlist(lapply(data, is.numeric))
 
 numeric_data <- data[, is_numeric_column_list]
 
-cor_data <- cor(numeric_data, use = "complete.obs") # NA are removed
+cor_data <- cor(numeric_data, use = "pairwise.complete.obs") 
 
-#pdf(file = "korelacja_miedzy_kolumnami.pdf")
-
-corrplot(cor_data, insig = "blank", method = "color", addCoef.col="grey",
-         title = "Korelacja między kolumnami")
-
+#pdf(file = "korelacja_miedzy_kolumnami_FULL.pdf")
+corrplot(cor_data, method = "color", tl.col="black",
+         tl.cex = 0.2, cl.cex = 0.2, title = "Korelacja między kolumnami")
 #dev.off()
 
 ```
 
-Z racji dużego rozmiaru macierzy (402 x 402) wykres nie jest zbyt czytelny. 
+Z racji dużego rozmiaru macierzy (402 x 402) wykres jest nieczytelny. 
 
-Wynik można zobaczyć również w wyeksportowanym pliku pdf: corrplot_results.pdf.
+Wynik można zobaczyć również w wyeksportowanym pliku pdf: korelacja_miedzy_kolumnami.pdf
+
+W celu zwiększenia widoczności, ogarniczymy liczbę kolumn, tylko do tych zaczynających się od part_01:
+
+```{r korelacje2, cache=TRUE, warning = FALSE, message=FALSE }
+
+is_part_01_column <- colnames(numeric_data) %like% 'part_01'
+part_01_column_names <- colnames(numeric_data)[is_part_01_column]
+filtered_numeric_data <- numeric_data[is_part_01_column]
+
+cor_data2 <- cor(filtered_numeric_data, use = "pairwise.complete.obs") 
+
+#pdf(file = "korelacja_miedzy_kolumnami_part_01.pdf")
+corrplot(cor_data2, tl.col="black", order = "FPC",
+         tl.cex = 0.3, title = "Korelacja między kolumnami")
+#dev.off()
+
+```
+
+W pliku "korelacja_miedzy_kolumnami_part_01.pdf" znajduje się powyższa wizualizacja.
 
 
 #9. Liczba przykładów dla każdej klasy
