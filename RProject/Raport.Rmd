@@ -13,9 +13,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Wstęp
+## Wstęp
 
-Na początku pliku powinna znajdować się automatycznie wypełniona data generacji dokumentu oraz spis treści pozwalający przejść do najważniejszych sekcji. Ponadto raport powinien zaczynać się od rozdziału podsumowującego całą analizę, streszczającego najważniejsze spostrzeżenia analityka.
+Analiza zbioru była dosyć skomplikowana z powodu dużej liczby kolumn.
+
+Dodatkowo nie ułatwiała tego dość egzotyczna, biologiczna dziedzina.
+
+Problemy pojawiły się przy określaniu korelacji pomiędzy kolumnami, gdzie część nie była numeryczna, a poza tym, nie sposób było pokazać wszystkich równocześnie.
+
 
 #1. Wykorzystane biblioteki
 ```{r bilbioteki, warning=FALSE, message=FALSE, hide = TRUE}
@@ -436,49 +441,6 @@ cleaned_data <- cleaned_data %>% select(-starts_with("dict_"), -starts_with("loc
 cleaned_data <- cleaned_data[, sapply(cleaned_data, nlevels) != 1]
 ```
 
-Stratyfikujemy zbiór, trenujemy za pomocą algorytmu random forest:
 
-```{r klasyfikator2, cache=TRUE}
-
-inTraining <- 
-    createDataPartition(
-        # atrybut do stratyfikacji
-        y = cleaned_data$res_name,
-        p = .75,
-        list = FALSE)
-
-
-training <- cleaned_data[ inTraining,]
-testing  <- cleaned_data[-inTraining,]
-
-
-ctrl <- trainControl(
-    # powtórzona ocena krzyżowa
-    method = "repeatedcv",
-    number = 2,
-    repeats = 5)
-
-
-fit <- train(res_name ~ .,
-             data = training,
-             method = "rf",
-             trControl = ctrl,
-             # Paramter dla algorytmu uczącego
-             ntree = 10)
-
-rfClasses <- predict(fit, newdata = testing)
-confusionMatrix(data = rfClasses, testing$Class)
-
-```
-
-Na koniec podsumowanie wyników:
-
-```{r klasyfikator3}
-
-
-rfClasses <- predict(fit, newdata = testing)
-confusionMatrix(data = rfClasses, testing$Class)
-
-```
 
 
